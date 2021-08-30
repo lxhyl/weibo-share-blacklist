@@ -1,0 +1,27 @@
+{
+  "manifest_version":2,
+  "name":"weibo_block",
+  "version":"1.0.0",
+  "description":"微博一键拉黑，黑名单共享",
+  "page_action":{
+    "default_title":"weibo-block",
+    "default_popup":"popup.html"
+  },
+  "background":{
+     "scripts":["./src/background.js"]
+  },
+  "permissions":[
+    "webRequest",
+    "notifications",
+    "activeTab",
+    "declarativeContent"
+  ],
+  "content_scripts":[ 
+    {
+      "matches":["https://weibo.com/*"],
+      "run_at":"document_end",
+      "js":["./src/inject.js"]
+    }
+  ],
+  "web_accessible_resources": ["/src/block.js"]
+}
