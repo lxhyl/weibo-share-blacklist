@@ -9,3 +9,19 @@ function injectCustomJs(jsPath) {
 }
 injectCustomJs("/src/block.js")
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+	sendResponse("111")
+  console.log(request.data)
+  const list = request.data
+  let timer = null
+  function block() {
+    const item = list.pop()
+    const uid = item ? item.uid : null
+    if (!uid) {
+      clearInterval(timer)
+      return
+    }
+    blockById(uid, 'noAsync')
+  }
+  timer = setInterval(block, 1500);
+})

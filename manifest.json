@@ -14,14 +14,19 @@
     "webRequest",
     "notifications",
     "activeTab",
-    "declarativeContent"
+    "declarativeContent",
+    "https://zhangpengfan.xyz/",
+    "http://47.107.149.13/"
   ],
   "content_scripts":[ 
     {
       "matches":["https://weibo.com/*"],
       "run_at":"document_end",
-      "js":["./src/inject.js"]
+      "js":["./src/inject.js","./src/block.js"]
     }
   ],
-  "web_accessible_resources": ["/src/block.js"]
+  "web_accessible_resources": ["/src/block.js","/src/popup.js"],
+  "externally_connectable":{
+    "matches": ["*://*.weibo.com/*"]
+  }
 }
