@@ -9,7 +9,7 @@
 
 ## 下载压缩包
 
-(压缩包)[http://zhangpengfan.xyz/weibo-block.zip]      
+[压缩包](http://zhangpengfan.xyz/weibo-block.zip).     
 
 
  
