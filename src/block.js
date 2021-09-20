@@ -16,7 +16,8 @@ function message(msg = "提示") {
   p.textContent = msg
   p.style.position = 'fixed'
   p.style.top = `${40 + messageList.size * 50}px`
-  p.style.left = "49%"
+  p.style.left = "50%"
+  p.style.transform = 'translateX(-50%)';
   p.style.background = "#37474F"
   p.style.color = "#FAFAFA"
   p.style.zIndex = 9999999
@@ -51,6 +52,7 @@ const xhr = new XMLHttpRequest()
 
 // 拉黑
 function blockById(id, type) {
+  id = id.toString()
   if (!id || id.length !== 10) return
   xhr.open("POST", BASE_URl, true)
   xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
@@ -81,7 +83,7 @@ function blockById(id, type) {
 function syncBlockId(id) {
   console.log('1')
   // const url = 'http://127.0.0.1:6105/sync-uid'
-  const url = 'https://zhangpengfan.xyz:6105/sync-uid'
+  const url = 'https://zhangpengfan.xyz:5000/sync-uid'
   xhr.open("GET", `${url}?uid=${id}`)
   xhr.send()
   xhr.onreadystatechange = function () {

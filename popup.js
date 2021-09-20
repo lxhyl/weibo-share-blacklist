@@ -10,7 +10,7 @@ let failed = 0
 
 getList.onclick = function () {
   // const url = 'http://127.0.0.1:6105/get-block-list'
-  const url = 'https://zhangpengfan.xyz:6105/get-block-list'
+  const url = 'https://zhangpengfan.xyz:5000/get-block-list'
   info.textContent = '获取中...'
   xhr.open('GET', url)
   xhr.send()
