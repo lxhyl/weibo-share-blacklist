@@ -7,8 +7,14 @@ function injectCustomJs(jsPath) {
 	temp.src = chrome.extension.getURL(jsPath);
 	document.head.appendChild(temp);
 }
-injectCustomJs("/src/block.js")
 
+function injectCSS(cssPath){
+  const link = document.createElement('link')
+  link.href = chrome.extension.getURL(cssPath)
+  document.head.appendChild(link)
+}
+injectCustomJs("/src/block.js")
+// injectCSS("/style/inject.css")
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
