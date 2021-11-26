@@ -9,11 +9,6 @@
 
 # 下载   
 
-## git clone
-
-
-## 下载压缩包
-
 [压缩包](https://github.com/lxhyl/weibo-block/raw/master/%E5%BE%AE%E5%8D%9A%E6%8B%89%E9%BB%91.zip).     
 
 
