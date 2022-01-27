@@ -1,0 +1,33 @@
+:root{
+  --color-main:#409eff;
+  --color-success:#67c23a;
+  --color-line:#dcdfe6;
+  --color-font: white;
+}
+body{
+  width: 300px;
+}
+.listid{
+  display: flex;
+  justify-content: center;
+}
+.listid > input{
+  border: 1px solid var(--color-line);
+  height: 25px;
+}
+.listid > input :focus{
+    border:1px solid var(--color-main)
+}
+.listid > button {
+  background: var(--color-main);
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  margin-left: 5px;
+  color: var(--color-font);
+  min-width: 50px;
+  cursor: grab;
+}
+.listid > button:active{
+  background-color: var(--color-success);
+}

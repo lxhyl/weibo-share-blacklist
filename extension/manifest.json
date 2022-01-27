@@ -1,0 +1,29 @@
+{
+  "manifest_version":2,
+  "name":"weibo_block",
+  "version":"1.0.0",
+  "description":"微博黑名单共享",
+  "browser_action":{
+    "default_title":"weibo-block",
+    "default_popup":"/src/popup/index.html"
+  },
+  "background":{
+     "scripts":["/src/background.js"]
+  },
+  "permissions":[
+    "storage",
+    "webRequest",
+    "declarativeContent"
+  ],
+  "content_scripts":[ 
+    {
+      "matches":["https://weibo.com/*"],
+      "run_at":"document_end",
+      "js":["/src/block.js"]
+    }
+  ],
+  "web_accessible_resources": ["/src/block.js"],
+  "externally_connectable":{
+    "matches": ["*://*.weibo.com/*"]
+  }
+}
