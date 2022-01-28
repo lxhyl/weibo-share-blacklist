@@ -1,3 +1,4 @@
+
 // array buffer to json
 const ab2json = b => JSON.parse(String.fromCharCode.apply(null, new Uint8Array(b)))
 
@@ -25,6 +26,14 @@ chrome.webRequest.onBeforeRequest.addListener(blockRequest,
 
 
 function joinBlackList(data){
-  console.log(data)
-  // fetch()
+  const url = 'http://114.132.210.203:5000/blacklist'
+  fetch(url,{
+    method:'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body:JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(res => console.log(res))
 }

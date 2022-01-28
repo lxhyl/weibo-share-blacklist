@@ -15,7 +15,8 @@
     "webRequest",
     "webRequestBlocking",
     "*://*.weibo.com/*",
-    "declarativeContent"
+    "declarativeContent",
+    "http://114.132.210.203:5000/*"
   ],
   "content_scripts":[ 
     {
