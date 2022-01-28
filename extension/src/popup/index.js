@@ -8,7 +8,7 @@ const listIdButton = getDom('listIdButton')
 function checkStorageListId(){
    chrome.storage.sync.get(["listId"],res => {
      if(Object.keys(res) === 0) return
-     tip.textContent = `当前黑名单列表ID:${res.listId}`
+     tip.textContent = `当前黑名单ID:${res.listId}`
      listIdInput.value = res.listId
    })
 }
@@ -16,7 +16,8 @@ checkStorageListId()
 
 
 listIdInput.addEventListener('input',e => {
-   listIdButton.style.cursor = e.target.value ? "grab" : "not-allowed"
+   const value = e.target.value
+   listIdButton.style.cursor = value && value.length > 3 ? "grab" : "not-allowed"
 })
 // 设置列表id
 function setBlackList(){
@@ -32,6 +33,5 @@ function setBlackList(){
     listIdButton.textContent = '确定'
     clearTimeout(timer)
   },1000)
-
 }
 listIdButton.addEventListener('click',setBlackList)
