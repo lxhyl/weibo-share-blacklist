@@ -10,11 +10,3 @@ function getUserWeiboId() {
 getUserWeiboId()
 
 
-let lists = []
-// 监听消息
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  console.log('request', request)
-  if(request && request.lists.length) lists == request.lists
-})
-
-

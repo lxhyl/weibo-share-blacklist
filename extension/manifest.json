@@ -16,7 +16,8 @@
     "webRequestBlocking",
     "*://*.weibo.com/*",
     "declarativeContent",
-    "http://114.132.210.203:5000/*"
+    "http://114.132.210.203:5000/*",
+    "notifications"
   ],
   "content_scripts":[ 
     {
