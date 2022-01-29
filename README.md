@@ -2,7 +2,7 @@
 
 # 安装
 
-* [下载extension.zip](https://raw.githubusercontent.com/lxhyl/lxhyl.github.io/master/extension.zip)插件。  
+* [下载extension.zip](https://github.com/lxhyl/weibo-share-blacklist/raw/master/extension.zip)插件。  
 * chrome 更多工具 => 扩展程序 => 打开开发者模式 => 加载已解压的扩展程序  
 * 右上角将插件固定
  
