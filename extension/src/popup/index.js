@@ -6,7 +6,12 @@ const listIdButton = getDom('listIdButton')
 const getListButton = getDom('getListButton')
 const allUid = getDom('allUid')
 
+
+//黑名单id
 let listid = null
+
+
+
 // 检查storage的listid
 function checkStorageListId(){
    chrome.storage.sync.get(["listId"],res => {
@@ -49,12 +54,16 @@ function getBlaclList(){
   .then(res => {
     if(res.code !== 200) return
     res = res.data
-    chrome.storage.sync.set({blockIds:res})
     let msg = ''
+    // chrome.storage.sync.set({blockIds:res})
+   
     if(res.length > 10) msg = `${JSON.stringify(res)}\n...`
     if(res.length <= 10) msg = JSON.stringify(res)
     if(res.length === 0) msg = '此列表暂无账号' 
-    allUid.textContent = msg
+     allUid.textContent = msg
+    if(res.length){
+      chrome.runtime.sendMessage({lists:res},r => console.log(r))
+    }
   })
 }
 getListButton.addEventListener('click',getBlaclList)
