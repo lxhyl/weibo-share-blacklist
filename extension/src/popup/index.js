@@ -55,7 +55,7 @@ function getBlaclList() {
       if (res.code !== 200) return
       res = res.data
       let msg = ''
-      if (res.length > 10) msg = `${JSON.stringify(res)}\n...`
+      if (res.length > 10) msg = `${JSON.stringify(res.slice(0,10))}\n...等共${res.length}只狗`
       if (res.length <= 10) msg = JSON.stringify(res)
       if (res.length === 0) msg = '此列表暂无账号'
       allUid.textContent = msg

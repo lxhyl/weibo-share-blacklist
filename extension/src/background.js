@@ -8,6 +8,7 @@ chrome.storage.sync.get(["listId"], res => {
   listId = res.listId
 })
 
+// 拦截拉黑请求
 function blockRequest(e) {
   if (!e.requestBody) return
   const body = ab2json(e.requestBody.raw[0].bytes)
@@ -16,7 +17,7 @@ function blockRequest(e) {
     uid: body.uid,
     listId: listId
   }
-  joinBlackList(data)
+  !body.FLAG && joinBlackList(data)
 }
 
 chrome.webRequest.onBeforeRequest.addListener(blockRequest,
@@ -43,7 +44,6 @@ let lists = []
 let blockTimer
 let successNum = 0, failedNum = 0
 function blockById() {
-  console.log('lists', lists)
   if (lists.length === 0) {
     clearInterval(blockTimer)
     sendNtc('拉黑结果通知',`成功${successNum}个,失败${failedNum}个`)
@@ -56,9 +56,16 @@ function blockById() {
       follow: 1,
       interact: 1,
       status: 1,
-      uid
+      uid,
+      FLAG:true
     })
-  }).then(res => res.json())
+  }).then(res => {
+    if(res.status !== 200){
+      return Promise.resolve({})
+    }else{
+      return res.json()
+    }
+  })
     .then(res => {
       if (res.ok === 1) {
         successNum++
@@ -66,7 +73,6 @@ function blockById() {
         failedNum++
       }
     })
-
 }
 
 // 监听消息
