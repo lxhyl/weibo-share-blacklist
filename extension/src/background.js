@@ -143,7 +143,7 @@ function sendNtc() {
   const options = {
     type: "progress",
     iconUrl: "/src/weibo.jpeg",
-    title: '拉黑中,请稍等',
+    title: `共${listsLength}只狗,拉黑中...`,
     message: `成功${successNum}个,失败${failedNum}个`,
     priority: 1,
     progress,
