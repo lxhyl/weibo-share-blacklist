@@ -41,45 +41,51 @@ chrome.webRequest.onBeforeRequest.addListener(blockRequest,
 )
 
 
+function blockByUid(uid) {
+  return new Promise((resolve, reject) => {
+    fetch("https://weibo.com/ajax/statuses/filterUser", {
+      method: "POST",
+      body: JSON.stringify({
+        follow: 1,
+        interact: 1,
+        status: 1,
+        uid,
+        FLAG: true
+      })
+    }).then(res => {
+      if (res.status !== 200) {
+        return Promise.resolve({})
+      } else {
+        return res.json()
+      }
+    })
+      .then(res => {
+        if (res.ok === 1) {
+          resolve('success')
+        } else {
+          reject('fiald')
+        }
+      })
+  })
+}
+
 // 拉黑
 let lists = []
 let listsLength = 0
 let blockTimer
 const blockResult = []
 let successNum = 0, failedNum = 0
-function blockById() {
+function blockAll() {
   if (lists.length === 0) {
     clearInterval(blockTimer)
     return
   }
   const { uid } = lists.pop()
-  fetch("https://weibo.com/ajax/statuses/filterUser", {
-    method: "POST",
-    body: JSON.stringify({
-      follow: 1,
-      interact: 1,
-      status: 1,
-      uid,
-      FLAG: true
-    })
-  }).then(res => {
-    if (res.status !== 200) {
-      return Promise.resolve({})
-    } else {
-      return res.json()
-    }
-  })
-    .then(res => {
-      if (res.ok === 1) {
-        successNum++
-      } else {
-        failedNum++
-      }
-      // 通知
-      sendNtc()
-    })
+  blockByUid(uid).then(() => successNum++).catch(() => failedNum++)
+  .finally(() => {
+    sendNtc()
+  })  
 }
-
 // 监听消息
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   sendResponse({ msg: 'res' })
@@ -91,7 +97,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   }
   if (request.type === 'blockAll') {
     sendNtc()
-    blockTimer = setInterval(blockById, 1000)
+    blockTimer = setInterval(blockAll, 1000)
+  }
+  if(request.type === 'blockOne'){
+    console.log('request',request)
   }
 })
 
@@ -139,7 +148,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, {
 // 拉黑结果通知
 let noticId = null
 function sendNtc() {
-  const progress =  Math.floor((successNum + failedNum) / listsLength * 100)
+  const progress = Math.floor((successNum + failedNum) / listsLength * 100)
   const options = {
     type: "progress",
     iconUrl: "/src/weibo.jpeg",
@@ -153,11 +162,20 @@ function sendNtc() {
     noticId = (Math.random() + 1).toString()
     chrome.notifications.create(noticId, options)
   } else {
-    if(progress < 100){
+    if (progress < 100) {
       chrome.notifications.update(noticId, options)
-    }else{
-      chrome.notifications.update(noticId, {...options,title:'拉黑完成🎉'})
+    } else {
+      chrome.notifications.update(noticId, { ...options, title: '拉黑完成🎉' })
       noticId = null
     }
   }
+}
+
+function normalNtc(title,message){
+  chrome.notifications.create(Math.random().toString(), {
+    type: "basic",
+    iconUrl: "/src/weibo.jpeg",
+    title,
+    message
+  })
 }

@@ -11,20 +11,13 @@ getUserWeiboId()
 
 
 
-const isUserReg1 = /\/u\/[0-9]{10}$/g
-const isUserReg2 = /\/n\//g
-
-
 function getCommentsTag() {
   const allATag = Array.from(document.querySelectorAll('a'))
   const commentsTag = allATag.filter(a => {
     // 是用户主页标签
-    let flag = isUserReg1.test(a.href) || isUserReg2.test(a.href)
+    let flag = a.href.includes('https://weibo.com/u/') || a.href.includes('https://weibo.com/n/') 
     // 跳过头像
     flag = flag && (a.getElementsByTagName('img').length === 0)
-    if(!flag){
-      console.log(a.href)
-    }
     return flag
   })
   return commentsTag
@@ -38,6 +31,11 @@ function injectBolckButton() {
      const button = document.createElement('span')
      button.textContent = '拉黑'
      button.style.color = '#5E35B1'
+     button.onclick = function(){
+      const splitUrl = item.href.split('/')
+      const uid = splitUrl[splitUrl.length - 1]
+      chrome.runtime.sendMessage({type:'blockOne',uid})
+     }
      item.appendChild(button)
    })
 }
