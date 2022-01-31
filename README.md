@@ -1,4 +1,5 @@
 微博共享拉黑chrome插件,施工中...🚧-🚧-🚧
+[github](https://github.com/lxhyl/weibo-share-blacklist).[readme](https://lxhyl.cn/weibo-share-blacklist/)
 
 # 安装
 
