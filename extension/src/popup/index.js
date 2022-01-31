@@ -61,7 +61,7 @@ function getBlaclList() {
       allUid.textContent = msg
       if (res.length) {
         lists = res
-        chrome.runtime.sendMessage({ type: 'data', lists: res }, r => console.log(r))
+        chrome.runtime.sendMessage({ type: 'listData', lists: res }, r => console.log(r))
       }
     })
 }
@@ -74,6 +74,6 @@ blockallButton.addEventListener('click',function(){
     return
   }
   allUid.textContent = '拉黑中,请勿关闭浏览器，拉黑完成将会弹出通知...'
-  chrome.runtime.sendMessage({ type: 'action'}, r => console.log(r))
+  chrome.runtime.sendMessage({ type: 'blockAll'}, r => console.log(r))
 })
 

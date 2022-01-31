@@ -8,6 +8,21 @@ chrome.storage.sync.get(["listId"], res => {
   listId = res.listId
 })
 
+
+// 加入黑名单
+function joinBlackList(data) {
+  const url = 'http://114.132.210.203:5000/blacklist'
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  })
+    .then(res => res.json())
+    .then(res => console.log(res))
+}
+
 // 拦截拉黑请求
 function blockRequest(e) {
   if (!e.requestBody) return
@@ -23,30 +38,18 @@ function blockRequest(e) {
 chrome.webRequest.onBeforeRequest.addListener(blockRequest,
   { urls: ["https://weibo.com/ajax/statuses/filterUser"] },
   ["blocking", "requestBody"]
-);
+)
 
 
-function joinBlackList(data) {
-  const url = 'http://114.132.210.203:5000/blacklist'
-  fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data)
-  })
-    .then(res => res.json())
-    .then(res => console.log(res))
-}
-
-
+// 拉黑
 let lists = []
+let listsLength = 0
 let blockTimer
+const blockResult = []
 let successNum = 0, failedNum = 0
 function blockById() {
   if (lists.length === 0) {
     clearInterval(blockTimer)
-    sendNtc('拉黑结果通知',`成功${successNum}个,失败${failedNum}个`)
     return
   }
   const { uid } = lists.pop()
@@ -57,12 +60,12 @@ function blockById() {
       interact: 1,
       status: 1,
       uid,
-      FLAG:true
+      FLAG: true
     })
   }).then(res => {
-    if(res.status !== 200){
+    if (res.status !== 200) {
       return Promise.resolve({})
-    }else{
+    } else {
       return res.json()
     }
   })
@@ -72,18 +75,22 @@ function blockById() {
       } else {
         failedNum++
       }
+      // 通知
+      sendNtc()
     })
 }
 
 // 监听消息
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   sendResponse({ msg: 'res' })
-  if (request.type === 'data' && request?.lists?.length) {
+  if (request.type === 'listData' && request?.lists?.length) {
     lists = request.lists
+    listsLength = lists.length
     successNum = 0
     failedNum = 0
   }
-  if (request.type === 'action') {
+  if (request.type === 'blockAll') {
+    sendNtc()
     blockTimer = setInterval(blockById, 1000)
   }
 })
@@ -102,10 +109,6 @@ function getCookie(cookie, name) {
   }
   return undefined
 }
-
-
-let headers = null
-
 function onBeforeSendHeaders(details) {
   if (details.url === 'https://weibo.com/ajax/statuses/filterUser') {
     const headers = details.requestHeaders
@@ -113,18 +116,18 @@ function onBeforeSendHeaders(details) {
     // X-xsrf-token请求头鉴权
     const xrsfToken = getCookie(cookie, 'XSRF-TOKEN')
     headers.push(
-      {name:'Origin',value:'https://weibo.com'},
-      {name:"Referer",value:`https://weibo.com/`},
-      {name:'X-requested-with',value:'XMLHttpRequest'},
-      {name:'Content-Type',value:'application/json;charset=UTF-8'},
-      {name:'X-xsrf-token',value:xrsfToken}
+      { name: 'Origin', value: 'https://weibo.com' },
+      { name: "Referer", value: `https://weibo.com/` },
+      { name: 'X-requested-with', value: 'XMLHttpRequest' },
+      { name: 'Content-Type', value: 'application/json;charset=UTF-8' },
+      { name: 'X-xsrf-token', value: xrsfToken }
     )
     return {
-      requestHeaders:headers
+      requestHeaders: headers
     }
   }
 }
-
+// 拦截设置headers
 chrome.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, {
   urls: ['*://*/*']
 }, [
@@ -134,11 +137,27 @@ chrome.webRequest.onBeforeSendHeaders.addListener(onBeforeSendHeaders, {
 ]);
 
 // 拉黑结果通知
-function sendNtc(title, message) {
-  chrome.notifications.create(Math.random().toString(), {
-    type: "basic",
-    iconUrl:"/src/weibo.jpeg",
-    title,
-    message
-  })
+let noticId = null
+function sendNtc() {
+  const progress =  Math.floor((successNum + failedNum) / listsLength * 100)
+  const options = {
+    type: "progress",
+    iconUrl: "/src/weibo.jpeg",
+    title: '拉黑中,请稍等',
+    message: `成功${successNum}个,失败${failedNum}个`,
+    priority: 1,
+    progress,
+  }
+  // 当前没有通知时新建，有时更新
+  if (!noticId) {
+    noticId = (Math.random() + 1).toString()
+    chrome.notifications.create(noticId, options)
+  } else {
+    if(progress < 100){
+      chrome.notifications.update(noticId, options)
+    }else{
+      chrome.notifications.update(noticId, {...options,title:'拉黑完成🎉'})
+      noticId = null
+    }
+  }
 }
