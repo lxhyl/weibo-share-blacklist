@@ -31,7 +31,8 @@ function injectBolckButton() {
      const button = document.createElement('span')
      button.textContent = '拉黑'
      button.style.color = '#5E35B1'
-     button.onclick = function(){
+     button.onclick = function(e){
+      e.preventDefault()
       const splitUrl = item.href.split('/')
       const uid = splitUrl[splitUrl.length - 1]
       chrome.runtime.sendMessage({type:'blockOne',uid})

@@ -95,12 +95,19 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     successNum = 0
     failedNum = 0
   }
+  // 拉黑列表
   if (request.type === 'blockAll') {
     sendNtc()
     blockTimer = setInterval(blockAll, 1000)
   }
+  // 拉黑一个
   if(request.type === 'blockOne'){
-    console.log('request',request)
+    blockByUid(request.uid).then(() => {
+      normalNtc(`成功拉黑uid${request.uid}`)
+    })
+    .catch(() => {
+      normalNtc(`拉黑uid${request.uid}失败`)
+    })
   }
 })
 
@@ -171,7 +178,7 @@ function sendNtc() {
   }
 }
 
-function normalNtc(title,message){
+function normalNtc(title,message ='拉黑结果通知'){
   chrome.notifications.create(Math.random().toString(), {
     type: "basic",
     iconUrl: "/src/weibo.jpeg",
