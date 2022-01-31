@@ -29,3 +29,9 @@
 * ~~拉黑进度通知~~   
 * ~~微博评论注入拉黑按钮~~    
 * 导出云黑名单
+
+
+# 截图
+![1](https://github.com/lxhyl/weibo-share-blacklist/raw/master/imgs/s1.png)
+![2](https://github.com/lxhyl/weibo-share-blacklist/raw/master/imgs/s2.png)
+![3](https://github.com/lxhyl/weibo-share-blacklist/raw/master/imgs/s3.png)
