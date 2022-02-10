@@ -161,7 +161,6 @@ function sendNtc() {
     iconUrl: "/src/weibo.jpeg",
     title: `共${listsLength}只狗,拉黑中...`,
     message: `成功${successNum}个,失败${failedNum}个`,
-    priority: 1,
     progress,
   }
   // 当前没有通知时新建，有时更新
